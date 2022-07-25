@@ -1,0 +1,71 @@
+alias l="ls -lrtha"
+alias hs='history | grep'
+alias ps='ps -efwww |grep'
+export TODAY=$(date +'%Y-%m-%d')
+
+#Color man page
+export LESS_TERMCAP_mb=$'\E[01;31m'
+export LESS_TERMCAP_md=$'\E[01;31m'
+export LESS_TERMCAP_me=$'\E[0m'
+export LESS_TERMCAP_se=$'\E[0m'
+export LESS_TERMCAP_so=$'\E[01;44;33m'
+export LESS_TERMCAP_ue=$'\E[0m'
+export LESS_TERMCAP_us=$'\E[01;32m'
+
+#History rules
+
+export HISTFILESIZE=20000
+export HISTSIZE=10000
+export HISTTIMEFORMAT="%d/%m/%y %T "
+shopt -s histappend
+# Combine multiline commands into one in history
+shopt -s cmdhist
+# Ignore duplicates, ls without options and builtin commands
+HISTCONTROL=ignoredups
+export HISTIGNORE="&:ls:[bf]g:exit"
+
+
+# Set prompt
+
+function __setprompt {
+ local HOSTNAME=`hostname`
+ local STAGE=`hostname |cut -c 3-3`
+ local GREEN="\[\033[0;32m\]"
+ local PINK="\[\033[0;31m\]"
+ local PURPLE="\[\033[0;35m\]"
+ local CYAN="\[\033[0;36m\]"
+ local NO_COLOUR="\[\033[0m\]"
+ local SSH_IP=`echo $SSH_CLIENT | awk '{ print $1 }'`
+ local SSH2_IP=`echo $SSH2_CLIENT | awk '{ print $1 }'`
+ if [ $SSH2_IP ] || [ $SSH_IP ] ; then
+   local SSH_FLAG="@\h"
+ fi
+ case $STAGE in
+ d) COLOR=$CYAN
+        STAGE=`echo "DEV"`
+    ;;
+ u) COLOR=$GREEN
+        STAGE=`echo "UAT"`
+    ;;
+ p) COLOR=$PINK
+        STAGE=`echo "PROD"`
+    ;;
+ q) COLOR=$PURPLE
+        STAGE=`echo "QA"`
+    ;;
+ esac
+
+ PS1="$COLOR[\$(date +%H:%M)][$STAGE][\u$SSH_FLAG@$HOSTNAME: \w ]\\$ $NO_COLOUR"
+ PS2="$COLOR>$NO_COLOUR "
+ PS4='$COLOR+$NO_COLOUR '
+
+}
+__setprompt
+
+#JBoss env
+
+export JBOSS_HOME=/opt/jboss-eap
+export DOMAIN_HOME=/opt/jboss-eap/domain
+
+#Java env
+export JAVA_HOME=/usr/java/default
