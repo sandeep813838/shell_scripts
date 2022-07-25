@@ -32,3 +32,5 @@ echo
 echo "Password: $USER_NAME"
 echo
 echo "HostName/IPAddress: $(hostname -I)"
+echo 
+echo "This script is writen by sampath" 
